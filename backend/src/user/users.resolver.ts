@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common'
-import { Resolver, Query, Args } from '@nestjs/graphql'
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql'
 import { User } from './user.entity'
 import { UsersService } from './users.service'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.gql.guard'
@@ -22,5 +22,14 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   async users(): Promise<User[]> {
     return this.usersService.findAll()
+  }
+
+  @Mutation(() => User)
+  async signUp(
+    @Args('name') name: string,
+    @Args('email') email: string,
+    @Args('password') password: string
+  ): Promise<User> {
+    return this.usersService.create(name, email, password)
   }
 }
