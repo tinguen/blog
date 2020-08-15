@@ -18,28 +18,29 @@ export class CommentsService {
     return this.commentsRepository.find()
   }
 
-  findOne(id: string): Promise<Comment> {
+  findOneById(id: string): Promise<Comment> {
     return this.commentsRepository.findOne(id)
   }
 
-  async removeComment(id: string, user: User): Promise<Comment> {
+  async removeComment(id: string, user: User): Promise<boolean> {
     const comment = await this.commentsRepository.findOne(id)
     if (!comment) throw new NotFoundException()
     if (comment.authorId != user.id && user.role != RoleEnum.Admin) throw UnauthorizedException
     await this.commentsRepository.delete(id)
-    return comment
+    return true
   }
 
   async createComment(text: string, postId: string, author: User): Promise<Comment> {
-    const post = await this.postsService.findOne(postId)
+    const post = await this.postsService.findOneById(postId)
     if (!post) throw new NotFoundException()
     const comment = new Comment(text, post, author)
     return this.commentsRepository.save(comment)
   }
 
-  async updateComment(id: string, text: string): Promise<Comment> {
+  async updateComment(id: string, text: string, user: User): Promise<Comment> {
     const comment = await this.commentsRepository.findOne(id)
     if (!comment) throw new NotFoundException()
+    if (comment.authorId != user.id && user.role != RoleEnum.Admin) throw UnauthorizedException
     comment.text = text
     return this.commentsRepository.save(comment)
   }

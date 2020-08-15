@@ -13,30 +13,33 @@ export class PostsService {
   ) {}
 
   findAll(): Promise<Post[]> {
-    return this.postsRepository.find()
+    return this.postsRepository.find({ relations: ['author'] })
   }
 
-  findOne(id: string): Promise<Post> {
+  findOneById(id: string): Promise<Post> {
     return this.postsRepository.findOne(id)
   }
 
-  async removePost(id: string, user: User): Promise<Post> {
+  async removePost(id: string, user: User): Promise<boolean> {
     const post = await this.postsRepository.findOne(id)
     if (!post) throw new NotFoundException()
     if (post.authorId != user.id && user.role != RoleEnum.Admin) throw UnauthorizedException
     await this.postsRepository.delete(id)
-    return post
+    return true
   }
 
-  createPost(text: string, author: User): Promise<Post> {
+  async createPost(text: string, author: User): Promise<Post> {
     const post = new Post(text, author)
-    return this.postsRepository.save(post)
+    await this.postsRepository.save(post)
+    return this.findOneById(post.id)
   }
 
-  async updatePost(id: string, text: string): Promise<Post> {
+  async updatePost(id: string, text: string, user: User): Promise<Post> {
     const post = await this.postsRepository.findOne(id)
     if (!post) throw new NotFoundException()
+    if (post.authorId != user.id && user.role != RoleEnum.Admin) throw UnauthorizedException
     post.text = text
-    return this.postsRepository.save(post)
+    await this.postsRepository.save(post)
+    return this.findOneById(post.id)
   }
 }

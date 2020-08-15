@@ -1,5 +1,6 @@
-import { PrimaryGeneratedColumn, Column, OneToMany, Entity, BeforeInsert, Unique } from 'typeorm'
 import { IsEmail } from 'class-validator'
+import { Field, ObjectType } from '@nestjs/graphql'
+import { PrimaryGeneratedColumn, Column, OneToMany, Entity, BeforeInsert, Unique } from 'typeorm'
 import { RoleEnum } from './enums/role.enum'
 import { Post } from '../post/post.entity'
 import { Comment } from '../comment/comment.entity'
@@ -7,16 +8,20 @@ import { Comment } from '../comment/comment.entity'
 import bcrypt = require('bcrypt')
 
 @Entity()
+@ObjectType()
 @Unique(['email'])
 export class User {
+  @Field()
   @PrimaryGeneratedColumn('uuid')
   id: string
 
+  @Field()
   @Column()
   name: string
 
-  @Column()
+  @Field()
   @IsEmail()
+  @Column()
   email: string
 
   @Column()
@@ -27,18 +32,23 @@ export class User {
     this.password = bcrypt.hashSync(this.password, 10)
   }
 
+  @Field(() => RoleEnum)
   @Column()
   role: RoleEnum
 
+  @Field(() => [Post])
   @OneToMany(
     () => Post,
-    (post) => post.author
+    (post) => post.author,
+    { eager: false }
   )
   posts: Post[]
 
+  @Field(() => [Comment])
   @OneToMany(
     () => Comment,
-    (comment) => comment.author
+    (comment) => comment.author,
+    { eager: false }
   )
   comments: Comment[]
 

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { AppController } from './app.controller'
+import { GraphQLModule } from '@nestjs/graphql'
 import { AppService } from './app.service'
 import { UsersModule } from './user/users.module'
 import { AuthModule } from './auth/auth.module'
@@ -27,12 +27,22 @@ import { CommentsModule } from './comment/comments.module'
       }),
       inject: [ConfigService]
     }),
+    GraphQLModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        autoSchemaFile: true,
+        sortSchema: true,
+        debug: !(configService.get<string>('NODE_ENV') === 'production'),
+        playground: !(configService.get<string>('NODE_ENV') === 'production'),
+        context: ({ req }): any => ({ req })
+      }),
+      inject: [ConfigService]
+    }),
     UsersModule,
     AuthModule,
     PostsModule,
     CommentsModule
   ],
-  controllers: [AppController],
   providers: [AppService]
 })
 export class AppModule {}

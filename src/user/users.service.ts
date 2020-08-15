@@ -12,11 +12,11 @@ export class UsersService {
     private usersRepository: Repository<User>
   ) {}
   findAll(): Promise<User[]> {
-    return this.usersRepository.find()
+    return this.usersRepository.find({ relations: ['posts', 'comments'] })
   }
 
-  findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id)
+  findOneById(id: string): Promise<User> {
+    return this.usersRepository.findOne(id, { relations: ['posts', 'comments'] })
   }
 
   async remove(id: string): Promise<void> {
