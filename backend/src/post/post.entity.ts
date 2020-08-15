@@ -29,7 +29,7 @@ export class Post {
   @OneToMany(
     () => Comment,
     (comment) => comment.post,
-    { eager: true }
+    { eager: true, onDelete: 'CASCADE' }
   )
   comments: Comment[]
 

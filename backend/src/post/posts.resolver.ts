@@ -5,10 +5,11 @@ import { PostsService } from './posts.service'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.gql.guard'
 import { CurrentUser } from '../user/decorators/current-user.decorator'
 import { User } from '../user/user.entity'
+import { CommentsService } from 'src/comment/comments.service'
 
 @Resolver(() => Post)
 export class PostsResolver {
-  constructor(private postsService: PostsService) {}
+  constructor(private postsService: PostsService, private commentsService: CommentsService) {}
 
   @Query(() => [Post])
   async posts(): Promise<Post[]> {
@@ -29,6 +30,8 @@ export class PostsResolver {
   @Mutation(() => Boolean)
   @UseGuards(GqlAuthGuard)
   async deletePost(@CurrentUser() user: User, @Args('id') id: string): Promise<boolean> {
+    const post = await this.postsService.findOneById(id)
+    post.comments.forEach((comment) => this.commentsService.removeComment(comment.id, user))
     return this.postsService.removePost(id, user)
   }
 }

@@ -9,7 +9,7 @@ import { RoleEnum } from 'src/user/enums/role.enum'
 export class PostsService {
   constructor(
     @InjectRepository(Post)
-    private postsRepository: Repository<Post>
+    private postsRepository: Repository<Post>,
   ) {}
 
   findAll(): Promise<Post[]> {

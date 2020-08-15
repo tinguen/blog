@@ -40,7 +40,7 @@ export class User {
   @OneToMany(
     () => Post,
     (post) => post.author,
-    { eager: false }
+    { onDelete: 'CASCADE' }
   )
   posts: Post[]
 
@@ -48,7 +48,7 @@ export class User {
   @OneToMany(
     () => Comment,
     (comment) => comment.author,
-    { eager: false }
+    { onDelete: 'CASCADE' }
   )
   comments: Comment[]
 

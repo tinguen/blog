@@ -20,7 +20,6 @@ import { AuthResolver } from './auth.resolver'
         secret: configService.get('SECRET')
       }),
       inject: [ConfigService]
-      // signOptions: { expiresIn: '60s' }
     })
   ],
   providers: [AuthService, JwtStrategy, AuthResolver],
