@@ -29,6 +29,7 @@ const StyledCommentsContainer = styled.div`
 `
 
 const Comments = ({ comments, id, refetch }: Props) => {
+  console.log(comments)
   return (
     <section>
       <StyledCommentsContainer>
@@ -43,7 +44,15 @@ const Comments = ({ comments, id, refetch }: Props) => {
         </Button>
         <StyledHeader>Comments</StyledHeader>
         {comments.map((comment) => {
-          return <Comment key={comment.id} body={comment.text} name={comment.author?.name} />
+          return (
+            <Comment
+              key={comment.id}
+              id={comment.id}
+              author={comment.author}
+              body={comment.text}
+              name={comment.author?.name}
+            />
+          )
         })}
         <CreateComment id={id} />
       </StyledCommentsContainer>

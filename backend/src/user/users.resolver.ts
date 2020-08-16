@@ -6,6 +6,7 @@ import { GqlAuthGuard } from '../auth/guards/jwt-auth.gql.guard'
 import { GqlRolesGuard } from '../auth/guards/roles.gql.guard'
 import { RoleEnum } from '../user/enums/role.enum'
 import { Roles } from '../auth/decorators/roles.decorator'
+import { CurrentUser } from './decorators/current-user.decorator'
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -14,6 +15,12 @@ export class UsersResolver {
   @Query(() => User)
   async author(@Args('id') id: string): Promise<User> {
     return this.usersService.findOneById(id)
+  }
+
+  @Query(() => User)
+  @UseGuards(GqlAuthGuard)
+  async user(@CurrentUser() user: User): Promise<User> {
+    return user
   }
 
   @Query(() => [User])

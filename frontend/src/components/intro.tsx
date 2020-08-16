@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 const StyledSection = styled.section`
   display: flex;
@@ -59,14 +59,36 @@ const StyledLink = styled.a`
   }
 `
 
+type LinkType = {
+  to: string
+  text: string
+}
+
 const Intro = () => {
+  const [links, setLinks] = useState<LinkType[]>([])
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) setLinks([{ to: '/posts/new', text: 'Create new post' }])
+    else {
+      setLinks([
+        { to: '/login', text: 'Login' },
+        { to: '/signup', text: 'Sign Up' }
+      ])
+    }
+  }, [])
+
   return (
     <StyledSection>
       <StyledHeader1>Blog.</StyledHeader1>
       <StyledHeader4>
-        <Link to="/posts/new">
-          <StyledLink>Create new post</StyledLink>
-        </Link>
+        {links.map((link) => {
+          return (
+            <Link key={link.to} to={link.to}>
+              <StyledLink>{link.text}</StyledLink>
+            </Link>
+          )
+        })}
       </StyledHeader4>
     </StyledSection>
   )

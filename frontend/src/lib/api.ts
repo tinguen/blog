@@ -13,6 +13,7 @@ export const getAllPosts = gql`
         id
         text
         author {
+          id
           name
         }
       }
@@ -38,8 +39,8 @@ export const updatePost = gql`
 `
 
 export const deletePost = gql`
-  mutation($text: String!) {
-    deletePost(text: $text)
+  mutation($id: String!) {
+    deletePost(id: $id)
   }
 `
 
@@ -61,8 +62,8 @@ export const updateComment = gql`
 `
 
 export const deleteComment = gql`
-  mutation($text: String!) {
-    deleteComment(text: $text)
+  mutation($id: String!) {
+    deleteComment(id: $id)
   }
 `
 
@@ -78,6 +79,17 @@ export const signUp = gql`
   mutation($email: String!, $password: String!, $name: String!) {
     signUp(email: $email, password: $password, name: $name) {
       id
+    }
+  }
+`
+
+export const getUser = gql`
+  query {
+    user {
+      id
+      name
+      email
+      role
     }
   }
 `

@@ -16,7 +16,7 @@ export type User = {
   id: string
   name: string
   email: string
-  role: RoleEnum
+  role: string
   posts: Post[]
   comments: Comment[]
 }

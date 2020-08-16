@@ -6,6 +6,8 @@ import Layout from './components/layout'
 import Home from './components/home'
 import PostsHome from './components/posts/home'
 import NewPost from './components/posts/new-post'
+import SignUp from './components/signup/home'
+import Login from './components/login/home'
 import history from './history'
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
               <Route exact path="/" component={() => <Home />} />
               <Route exact path="/posts/new" component={() => <NewPost />} />
               <Route exact path="/posts/:id" component={() => <PostsHome />} />
+              <Route exact path="/signup" component={() => <SignUp />} />
+              <Route exact path="/login" component={() => <Login />} />
               {/* <Route component={() => <NotFound />} /> */}
             </Switch>
           </Layout>
