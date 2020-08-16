@@ -9,11 +9,19 @@ import { RoleEnum } from 'src/user/enums/role.enum'
 export class PostsService {
   constructor(
     @InjectRepository(Post)
-    private postsRepository: Repository<Post>,
+    private postsRepository: Repository<Post>
   ) {}
 
-  findAll(): Promise<Post[]> {
-    return this.postsRepository.find({ relations: ['author'] })
+  async findAll(): Promise<Post[]> {
+    return this.postsRepository.find({
+      join: {
+        alias: 'post',
+        leftJoinAndSelect: {
+          comments: 'post.comments',
+          author: 'comments.author'
+        }
+      }
+    })
   }
 
   findOneById(id: string): Promise<Post> {
